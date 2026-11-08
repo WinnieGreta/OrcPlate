@@ -1,0 +1,24 @@
+{
+    "name": "Gameplay.NumberPlate.Model.Tests",
+    "rootNamespace": "",
+    "references": [
+        "Zenject",
+        "Zenject-TestFramework",
+        "Gameplay.NumberPlate.Model",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
