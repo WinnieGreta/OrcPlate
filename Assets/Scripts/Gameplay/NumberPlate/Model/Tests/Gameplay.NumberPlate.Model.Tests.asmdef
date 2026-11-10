@@ -2,8 +2,6 @@
     "name": "Gameplay.NumberPlate.Model.Tests",
     "rootNamespace": "",
     "references": [
-        "Zenject",
-        "Zenject-TestFramework",
         "Gameplay.NumberPlate.Model",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
