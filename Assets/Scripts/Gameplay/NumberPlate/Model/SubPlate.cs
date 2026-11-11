@@ -20,10 +20,10 @@ namespace Gameplay.NumberPlate.Model
         public SubPlate(SourcePlate source, float leftX, float rightX, bool isUpright, bool isLeftSourceEdgeOpen = false, bool isRightSourceEdgeOpen = false)
         {
             if (source == null)
-                throw new ArgumentNullException("Subplate must have source plate");
+                throw new ArgumentNullException(nameof(source));
             
-            if (leftX < 0 || rightX <= leftX + MinCutWidth)
-                throw new ArgumentException($"Subplate width must be greater than minimum {MinCutWidth}");
+            if (leftX < 0 || rightX > source.Width || leftX >= rightX)
+                throw new ArgumentException($"Subplate width must be greater than 0, subplate can't be wider that source");
             
             Source = source;
             LeftSourceX = leftX;

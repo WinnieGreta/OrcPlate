@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
-using UnityEngine;
 
 namespace Gameplay.NumberPlate.Model.Tests
 {
@@ -49,7 +47,7 @@ namespace Gameplay.NumberPlate.Model.Tests
             Assert.That(subPlate2.Reading, Is.EqualTo("MM189"));
 
             Assert.Throws<ArgumentNullException>(() => new SubPlate(null, 0f, 10f, true));
-            Assert.Throws<ArgumentException>(() => new SubPlate(_source1, 0f, 0.01f, true));
+            Assert.Throws<ArgumentException>(() => new SubPlate(_source1, 0f, -1f, true));
         }
 
         [Test]
@@ -57,7 +55,9 @@ namespace Gameplay.NumberPlate.Model.Tests
         {
             SubPlate subPlate1 = new SubPlate(_source1, 0, _source1.Width, true);
             (IPlatePiece platePiece11, IPlatePiece platePiece12) = subPlate1.CutAt(3.75f);
-            Assert.That(subPlate1.Reading, Is.EqualTo("AB234"));
+            
+            Assert.That(platePiece11.Reading, Is.EqualTo("AB"));
+            Assert.That(platePiece12.Reading, Is.EqualTo("234"));
         }
 
         [Test]
@@ -225,10 +225,10 @@ namespace Gameplay.NumberPlate.Model.Tests
             Assert.That(platePiece1.Width, Is.EqualTo(subPlate1.Width + 3.75f));
             Assert.That(platePiece2.Width, Is.EqualTo(gluedPlate1.Width - subPlate1.Width - 3.75f));
             
-            Assert.That(platePiece1.IsLeftEdgeOpen, Is.EqualTo(false));
-            Assert.That(platePiece1.IsRightEdgeOpen, Is.EqualTo(true));
-            Assert.That(platePiece2.IsLeftEdgeOpen, Is.EqualTo(true));
-            Assert.That(platePiece2.IsRightEdgeOpen, Is.EqualTo(false));
+            Assert.That(platePiece1.IsLeftEdgeOpen, Is.False);
+            Assert.That(platePiece1.IsRightEdgeOpen, Is.True);
+            Assert.That(platePiece2.IsLeftEdgeOpen, Is.True);
+            Assert.That(platePiece2.IsRightEdgeOpen, Is.False);
             
             Assert.That(platePiece1.SubPlates[^1].Reading[^1], Is.EqualTo('M'));
             Assert.That(platePiece2.SubPlates[0].Reading[0], Is.EqualTo('1'));
@@ -256,10 +256,10 @@ namespace Gameplay.NumberPlate.Model.Tests
             Assert.That(platePiece1.Width, Is.EqualTo(subPlate1.Width + 3f));
             Assert.That(platePiece2.Width, Is.EqualTo(gluedPlate1.Width - subPlate1.Width - 3f));
             
-            Assert.That(platePiece1.IsLeftEdgeOpen, Is.EqualTo(false));
-            Assert.That(platePiece1.IsRightEdgeOpen, Is.EqualTo(true));
-            Assert.That(platePiece2.IsLeftEdgeOpen, Is.EqualTo(true));
-            Assert.That(platePiece2.IsRightEdgeOpen, Is.EqualTo(false));
+            Assert.That(platePiece1.IsLeftEdgeOpen, Is.False);
+            Assert.That(platePiece1.IsRightEdgeOpen, Is.True);
+            Assert.That(platePiece2.IsLeftEdgeOpen, Is.True);
+            Assert.That(platePiece2.IsRightEdgeOpen, Is.False);
             
             Assert.That(platePiece1.SubPlates[^1].Reading[^1], Is.EqualTo('?'));
             Assert.That(platePiece2.SubPlates[0].Reading[0], Is.EqualTo('?'));
@@ -292,23 +292,23 @@ namespace Gameplay.NumberPlate.Model.Tests
             
             gluedPlate11.Flip();
             Assert.That(gluedPlate11.Reading, Is.EqualTo("1WW?????"));
-            Assert.That(gluedPlate11.IsLeftEdgeOpen, Is.EqualTo(true));
-            Assert.That(gluedPlate11.IsRightEdgeOpen, Is.EqualTo(false));
+            Assert.That(gluedPlate11.IsLeftEdgeOpen, Is.True);
+            Assert.That(gluedPlate11.IsRightEdgeOpen, Is.False);
             
             gluedPlate12.Flip();
             Assert.That(gluedPlate12.Reading, Is.EqualTo("??9??68"));
-            Assert.That(gluedPlate12.IsRightEdgeOpen, Is.EqualTo(true));
-            Assert.That(gluedPlate12.IsLeftEdgeOpen, Is.EqualTo(false));
+            Assert.That(gluedPlate12.IsRightEdgeOpen, Is.True);
+            Assert.That(gluedPlate12.IsLeftEdgeOpen, Is.False);
 
             (GluedPlate gluedPlate111, GluedPlate gluedPlate112) = gluedPlate11.CutAt(5f);
             Assert.That(gluedPlate111.Reading, Is.EqualTo("1WW"));
-            Assert.That(gluedPlate111.IsLeftEdgeOpen, Is.EqualTo(true));
-            Assert.That(gluedPlate111.IsRightEdgeOpen, Is.EqualTo(true));
+            Assert.That(gluedPlate111.IsLeftEdgeOpen, Is.True);
+            Assert.That(gluedPlate111.IsRightEdgeOpen, Is.True);
             
             gluedPlate111.Flip();
             Assert.That(gluedPlate111.Reading, Is.EqualTo("MM1"));
-            Assert.That(gluedPlate111.IsLeftEdgeOpen, Is.EqualTo(true));
-            Assert.That(gluedPlate111.IsRightEdgeOpen, Is.EqualTo(true));
+            Assert.That(gluedPlate111.IsLeftEdgeOpen, Is.True);
+            Assert.That(gluedPlate111.IsRightEdgeOpen, Is.True);
         }
 
         [Test]
@@ -347,7 +347,10 @@ namespace Gameplay.NumberPlate.Model.Tests
 
             GluedPlate gluedPlate6 = GluedPlate.Join(GluedPlate.Join(gluedPlate3, gluedPlate5), gluedPlate4);
             Assert.That(gluedPlate6.SubPlates.Count, Is.EqualTo(3));
-            Assert.That(gluedPlate6, Is.TypeOf(typeof(GluedPlate)));
+
+            GluedPlate gluedPlate7 =
+                GluedPlate.Join(gluedPlate5, new SubPlate(_source3, 0, _source3.Width, true, true));
+            Assert.That(gluedPlate7.SubPlates.Count, Is.EqualTo(2));
 
         }
     }

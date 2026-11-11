@@ -78,7 +78,7 @@ namespace Gameplay.NumberPlate.Model
         {
             if (!CanJoin(left, right))
             {
-                throw new ArgumentException("Pieces can only be joined at open edges, piece can't be joined ");
+                throw new ArgumentException("Pieces can only be joined at open edges, piece can't be joined with itself");
             }
 
             return new GluedPlate(left.SubPlates.Concat(right.SubPlates));
