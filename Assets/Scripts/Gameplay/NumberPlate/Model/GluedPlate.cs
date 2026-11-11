@@ -12,15 +12,17 @@ namespace Gameplay.NumberPlate.Model
         public string Reading => string.Concat(SubPlates.Select(x => x.Reading));
         public IReadOnlyList<SubPlate> SubPlates { get; private set; }
 
-        public GluedPlate(IReadOnlyList<SubPlate> subPlates)
+        public GluedPlate(IEnumerable<SubPlate> subPlates)
         {
             if (subPlates == null)
                 throw new ArgumentNullException(nameof(subPlates));
-            if (subPlates.Count == 0)
+            
+            SubPlates = subPlates.ToArray();
+            
+            if (SubPlates.Count == 0)
                 throw new ArgumentException("A glued plate needs at least one subplate", nameof(subPlates));
 
-            SubPlates = subPlates;
-            Width = subPlates.Sum(x => x.Width);
+            Width = SubPlates.Sum(x => x.Width);
         }
 
         public bool CanCutAt(float localX)
@@ -69,5 +71,18 @@ namespace Gameplay.NumberPlate.Model
             }
             return (-1, -1);
         }
+
+        public static bool CanJoin(IPlatePiece left, IPlatePiece right) => !ReferenceEquals(left, right) && left.IsRightEdgeOpen && right.IsLeftEdgeOpen;
+
+        public static GluedPlate Join(IPlatePiece left, IPlatePiece right)
+        {
+            if (!CanJoin(left, right))
+            {
+                throw new ArgumentException("Pieces can only be joined at open edges, piece can't be joined ");
+            }
+
+            return new GluedPlate(left.SubPlates.Concat(right.SubPlates));
+        }
+
     }
 }

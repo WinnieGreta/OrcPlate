@@ -6,7 +6,7 @@ namespace Gameplay.NumberPlate.Model
 {
     public class SubPlate : IPlatePiece
     {
-        public readonly SourcePlate Source;
+        public SourcePlate Source { get; }
         public float LeftSourceX { get; }
         public float RightSourceX { get; }
         private readonly bool _isLeftSourceEdgeOpen, _isRightSourceEdgeOpen;
@@ -19,6 +19,12 @@ namespace Gameplay.NumberPlate.Model
         
         public SubPlate(SourcePlate source, float leftX, float rightX, bool isUpright, bool isLeftSourceEdgeOpen = false, bool isRightSourceEdgeOpen = false)
         {
+            if (source == null)
+                throw new ArgumentNullException("Subplate must have source plate");
+            
+            if (leftX < 0 || rightX <= leftX + MinCutWidth)
+                throw new ArgumentException($"Subplate width must be greater than minimum {MinCutWidth}");
+            
             Source = source;
             LeftSourceX = leftX;
             RightSourceX = rightX;
