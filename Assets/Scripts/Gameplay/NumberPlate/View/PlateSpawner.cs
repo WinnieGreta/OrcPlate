@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
@@ -8,8 +7,8 @@ namespace Gameplay.NumberPlate.View
     public class PlateSpawner: IInitializable, IDisposable
     {
         [Inject] private PlateTextureBaker _baker;
-        [Inject] private RawImage _image;
         [Inject] private Button _plateSpawnButton;
+        [Inject] private SubPlateView.Factory _factory;
 
         public void Initialize()
         {
@@ -24,7 +23,8 @@ namespace Gameplay.NumberPlate.View
         private void Spawn()
         {
             var texture = _baker.BakePlateTexture(512, 128);
-            _image.texture = texture;
+            var view = _factory.Create();
+            view.Show(texture);
         }
     }
 }

@@ -8,9 +8,10 @@ namespace Gameplay.NumberPlate.View
     {
         [SerializeField] private Camera _plateBakeCamera; 
         [SerializeField] private RectTransform _canvasRect;
+        [SerializeField] private SubPlateView _subPlateViewPrefab;
+        [SerializeField] private Transform _subplateCanvasRoot;
         
         // TEMP for testing
-        [SerializeField] private RawImage _image;
         [SerializeField] private Button _plateSpawnButton;
 
         public override void InstallBindings()
@@ -18,11 +19,14 @@ namespace Gameplay.NumberPlate.View
             Container.BindInstance(_plateBakeCamera).AsSingle();
             Container.BindInstance(_canvasRect).AsSingle();
             
-            Container.BindInstance(_image).AsSingle();
             Container.BindInstance(_plateSpawnButton).AsSingle();
 
             Container.BindInterfacesAndSelfTo<PlateTextureBaker>().AsSingle();
             Container.BindInterfacesAndSelfTo<PlateSpawner>().AsSingle();
+
+            Container.BindFactory<SubPlateView, SubPlateView.Factory>()
+                .FromComponentInNewPrefab(_subPlateViewPrefab)
+                .UnderTransform(_subplateCanvasRoot);
         }
     }
 }
